@@ -2,7 +2,7 @@ import { Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window");
 
 const COLORS = {
-  primary: "#454B60",
+  primary: "#fcb98c",
   secondary: "#DDF0FF",
   tertiary: "#FF7754",
   link: "#0000FF",
