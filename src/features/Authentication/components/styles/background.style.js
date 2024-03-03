@@ -3,7 +3,6 @@ import { SIZES, COLORS } from "../../../../infrastructure/theme";
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: COLORS.lightWhite,
   },
   image: {
@@ -30,8 +29,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: SIZES.height * 0.42,
     width: SIZES.width,
-    height: SIZES.height,
-    backgroundColor: COLORS.lightWhite,
+    height: 50,
+    backgroundColor: COLORS.white,
     borderTopLeftRadius: SIZES.medium,
     borderTopRightRadius: SIZES.medium,
   },

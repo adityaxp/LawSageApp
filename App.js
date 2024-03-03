@@ -3,7 +3,7 @@ import { StyleSheet, Text, View } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
-import { LoginScreen } from "./src/features/Authentication/screens/LoginScreen";
+import { RegisterScreen } from "./src/features/Authentication/screens/RegisterScreen";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -26,8 +26,8 @@ export default function App() {
   }
 
   return (
-    <View style={styles.container}>
-      <LoginScreen />
+    <View>
+      <RegisterScreen />
       <StatusBar style="light" />
     </View>
   );

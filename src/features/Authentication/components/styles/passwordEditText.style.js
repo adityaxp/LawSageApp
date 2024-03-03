@@ -8,11 +8,11 @@ const styles = StyleSheet.create({
     alignContent: "center",
     alignItems: "center",
     backgroundColor: COLORS.secondary,
-    marginHorizontal: SIZES.large,
     height: 50,
     borderRadius: SIZES.small,
     borderColor: COLORS.primary,
     borderWidth: 1.5,
+    marginBottom: SIZES.large,
   },
   icon: {
     paddingLeft: SIZES.xSmall,
@@ -23,7 +23,7 @@ const styles = StyleSheet.create({
     color: COLORS.black,
     paddingLeft: SIZES.medium,
     paddingTop: SIZES.xxSmall,
-    fontSize: SIZES.large,
+    fontSize: SIZES.medium,
   },
   obsecureIcon: {
     paddingRight: SIZES.xSmall,
