@@ -3,7 +3,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
-import { RegisterScreen } from "./src/features/Authentication/screens/RegisterScreen";
+import { AuthStack } from "./src/infrastructure/navigation/AuthStack";
+import { ChatScreen } from "./src/features/Chat/screens/ChatScreen";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -26,10 +27,11 @@ export default function App() {
   }
 
   return (
-    <View>
-      <RegisterScreen />
+    <>
+      {/* <AuthStack /> */}
+      <ChatScreen />
       <StatusBar style="light" />
-    </View>
+    </>
   );
 }
 
