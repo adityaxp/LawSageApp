@@ -11,19 +11,17 @@ const styles = StyleSheet.create({
     height: SIZES.height * 0.45,
   },
   text: {
-    position: "absolute",
-    top: SIZES.height * 0.1,
     fontFamily: "bold",
     color: COLORS.white,
-    left: 20,
     fontSize: 40,
+    marginTop: SIZES.statusBarHeight,
+    marginHorizontal: 20,
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 10,
   },
   textCycler: {
-    position: "absolute",
-    top: SIZES.height * 0.18,
+    marginTop: SIZES.xxSmall,
   },
   curve: {
     position: "absolute",
@@ -38,8 +36,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: SIZES.height * 0.3,
     flexDirection: "row",
-    marginHorizontal: 20,
-    marginVertical: 10,
+    marginHorizontal: SIZES.large,
+    marginVertical: SIZES.large,
   },
 });
 

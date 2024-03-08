@@ -1,12 +1,9 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, StatusBar } from "react-native";
 import { COLORS, SIZES } from "../../../../infrastructure/theme";
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: COLORS.white,
-  },
-  loginContainer: {
-    marginHorizontal: SIZES.large,
+    marginTop: StatusBar.currentHeight,
   },
   textContainer: {
     justifyContent: "center",
@@ -19,6 +16,9 @@ const styles = StyleSheet.create({
     color: COLORS.tertiary,
   },
   registerContainer: {
+    marginHorizontal: SIZES.large,
+  },
+  loginContainer: {
     marginTop: SIZES.small - 5,
     marginLeft: 5,
     flexDirection: "row",
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     fontFamily: "medium",
     fontSize: 15,
   },
-  registerText: {
+  loginText: {
     fontFamily: "medium",
     color: COLORS.link,
     fontSize: 15,

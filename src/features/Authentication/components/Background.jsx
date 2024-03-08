@@ -1,4 +1,4 @@
-import { Image, View, Text } from "react-native";
+import { Image, View, Text, ImageBackground } from "react-native";
 import React from "react";
 import { TextCycler } from "../../../components/TextCycler";
 import { LinkButton } from "../../../components/LinkButton";
@@ -19,18 +19,19 @@ export const Background = () => {
   return (
     <View style={styles.container}>
       <View>
-        <Image
+        <ImageBackground
           source={require("../../../../assets/images/auth-background.jpg")}
           style={styles.image}
-        />
-        <Text style={styles.text}>Law Sage v0.2</Text>
-        <View style={styles.textCycler}>
-          <TextCycler texts={texts} interval={interval} />
-        </View>
-        <View style={styles.socialButtonContainer}>
-          <LinkButton image={gitHubImage} link={githubURL} />
-          <LinkButton image={huggingFaceImage} link={huggingfaceURL} />
-        </View>
+        >
+          <Text style={styles.text}>Law Sage v0.2</Text>
+          <View style={styles.textCycler}>
+            <TextCycler texts={texts} interval={interval} />
+          </View>
+          <View style={styles.socialButtonContainer}>
+            <LinkButton image={gitHubImage} link={githubURL} />
+            <LinkButton image={huggingFaceImage} link={huggingfaceURL} />
+          </View>
+        </ImageBackground>
       </View>
       <View style={styles.curve} />
     </View>
