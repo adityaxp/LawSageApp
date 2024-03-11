@@ -13,8 +13,9 @@ import { COLORS, SIZES } from "../../../infrastructure/theme";
 import { StatusBar } from "expo-status-bar";
 import { Ionicons, AntDesign } from "@expo/vector-icons";
 import { EmptyListPlaceHolder } from "../components/EmptyListPlaceHolder";
+import { ChatRowItem } from "../components/ChatRowItem";
 
-export const ChatScreen = () => {
+export const ChatScreen = ({ navigation }) => {
   const scrollViewRef = useRef();
   const [chatState, setChatState] = useState(true);
 
@@ -29,7 +30,10 @@ export const ChatScreen = () => {
     >
       <View style={styles.toolBarContainer}>
         <View style={styles.toolBarItems}>
-          <TouchableOpacity style={styles.backButton}>
+          <TouchableOpacity
+            style={styles.backButton}
+            onPress={() => navigation.goBack()}
+          >
             <Ionicons
               name="arrow-back-circle-outline"
               size={34}
@@ -54,8 +58,11 @@ export const ChatScreen = () => {
         </View>
       </View>
       <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-        <ScrollView ref={scrollViewRef} contentContainerStyle={{ flexGrow: 1 }}>
-          {chatState ? <EmptyListPlaceHolder /> : null}
+        <ScrollView
+          ref={scrollViewRef}
+          contentContainerStyle={{ flexGrow: 1, padding: 8 }}
+        >
+          {chatState ? <EmptyListPlaceHolder /> : <ChatRowItem />}
         </ScrollView>
         <View style={styles.chatInputContainer}>
           <TextInput
@@ -72,7 +79,8 @@ export const ChatScreen = () => {
         </View>
         <View style={styles.infoTextContainer}>
           <Text style={styles.infoText}>
-            LawSage can make mistakes. It's advisable to verify details.
+            LawSage can make mistakes. It's recommended to confirm important
+            details.
           </Text>
         </View>
       </KeyboardAvoidingView>
@@ -152,6 +160,7 @@ const styles = StyleSheet.create({
     fontSize: 12.5,
     color: COLORS.white,
     fontFamily: "regular",
+    textAlign: "center",
   },
   chatButton: {
     backgroundColor: COLORS.tertiary,
