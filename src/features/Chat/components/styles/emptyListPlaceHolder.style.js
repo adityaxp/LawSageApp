@@ -19,9 +19,11 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
   },
   placeholderLogo: {
-    borderRadius: 500,
+    borderRadius: 999,
     width: 85,
     height: 85,
+    borderColor: COLORS.gray2,
+    borderWidth: 1,
   },
 });
 
