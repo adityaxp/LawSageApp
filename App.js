@@ -5,6 +5,8 @@ import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import { AuthStack } from "./src/infrastructure/navigation/AuthStack";
 import { ChatScreen } from "./src/features/Chat/screens/ChatScreen";
+import { ChatRowItem } from "./src/features/Chat/components/ChatRowItem";
+import { AppStack } from "./src/infrastructure/navigation/AppStack";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -29,8 +31,10 @@ export default function App() {
   return (
     <>
       {/* <AuthStack /> */}
-      <ChatScreen />
-      <StatusBar style="light" />
+      {/* <ChatScreen /> */}
+      {/* <ChatRowItem /> */}
+      <AppStack />
+      <StatusBar style="dark" />
     </>
   );
 }
@@ -38,7 +42,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    backgroundColor: "#000",
+    padding: 10,
   },
 });
