@@ -1,3 +1,5 @@
+import BottomSheet from "@gorhom/bottom-sheet";
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import {
   StyleSheet,
   Text,
@@ -11,81 +13,172 @@ import {
 import React, { useRef, useState } from "react";
 import { COLORS, SIZES } from "../../../infrastructure/theme";
 import { StatusBar } from "expo-status-bar";
-import { Ionicons, AntDesign } from "@expo/vector-icons";
+import {
+  Ionicons,
+  AntDesign,
+  MaterialCommunityIcons,
+  FontAwesome,
+} from "@expo/vector-icons";
 import { EmptyListPlaceHolder } from "../components/EmptyListPlaceHolder";
 import { ChatRowItem } from "../components/ChatRowItem";
+import { useRoute } from "@react-navigation/native";
 
 export const ChatScreen = ({ navigation }) => {
+  const bottomSheetRef = useRef(null);
+  const snapPoints = [SIZES.height - SIZES.height + 0.01, "45%", "50%"];
+
   const scrollViewRef = useRef();
-  const [chatState, setChatState] = useState(true);
+  const [chatState, setChatState] = useState(false);
 
   const scrollToBottom = () => {
     scrollViewRef.current.scrollToEnd({ animated: true });
   };
 
-  return (
-    <ImageBackground
-      source={require("../../../../assets/images/chat-background.jpg")}
-      style={styles.image}
-    >
-      <View style={styles.toolBarContainer}>
-        <View style={styles.toolBarItems}>
-          <TouchableOpacity
-            style={styles.backButton}
-            onPress={() => navigation.goBack()}
-          >
-            <Ionicons
-              name="arrow-back-circle-outline"
-              size={34}
-              color="black"
-            />
-          </TouchableOpacity>
+  const openBottomSheet = () => {
+    bottomSheetRef.current?.expand();
+  };
 
-          <View style={styles.modelTag}>
-            <Text style={styles.modelTagText} numberOfLines={1}>
-              Model Name{" "}
+  const route = useRoute();
+  const { model } = route.params;
+  return (
+    <GestureHandlerRootView style={styles.container}>
+      <ImageBackground
+        source={require("../../../../assets/images/chat-background.jpg")}
+        style={styles.image}
+      >
+        <View style={styles.toolBarContainer}>
+          <View style={styles.toolBarItems}>
+            <TouchableOpacity
+              style={styles.backButton}
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons
+                name="arrow-back-circle-outline"
+                size={34}
+                color="black"
+              />
+            </TouchableOpacity>
+
+            <View style={styles.modelTag}>
+              <Text style={styles.modelTagText} numberOfLines={1}>
+                {model}
+              </Text>
+              <AntDesign
+                name="down"
+                size={14}
+                color="gray"
+                style={styles.modelCardExpandButton}
+              />
+            </View>
+
+            <TouchableOpacity
+              style={styles.optionsButton}
+              onPress={openBottomSheet}
+            >
+              <Ionicons
+                name="ellipsis-horizontal-circle"
+                size={34}
+                color="black"
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+        <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
+          <ScrollView
+            ref={scrollViewRef}
+            contentContainerStyle={{ flexGrow: 1, padding: 8 }}
+          >
+            {chatState ? <EmptyListPlaceHolder /> : <ChatRowItem />}
+          </ScrollView>
+          <View style={styles.chatInputContainer}>
+            <TextInput
+              placeholder="Message LawSage..."
+              style={styles.chatInput}
+              selectionColor={COLORS.gray2}
+              onFocus={scrollToBottom}
+            />
+            <TouchableOpacity>
+              <View style={styles.chatButton}>
+                <AntDesign name="arrowup" size={20} color="white" />
+              </View>
+            </TouchableOpacity>
+          </View>
+          <View style={styles.infoTextContainer}>
+            <Text style={styles.infoText}>
+              LawSage can make mistakes. It's recommended to confirm important
+              details.
             </Text>
-            <AntDesign name="down" size={14} color="gray" />
+          </View>
+        </KeyboardAvoidingView>
+        <StatusBar style="dark" />
+      </ImageBackground>
+      <BottomSheet
+        ref={bottomSheetRef}
+        index={0}
+        snapPoints={snapPoints}
+        handleIndicatorStyle={{
+          width: 60,
+          height: 5,
+          backgroundColor: "rgba(0,0,0,0.3)",
+        }}
+      >
+        <View
+          style={{
+            backgroundColor: "white",
+            marginLeft: 20,
+            marginRight: 20,
+          }}
+        >
+          <View style={styles.menuOptionsContainer}>
+            <Text style={styles.optionsTitleText}>Save Chat</Text>
+            <View style={styles.optionsContainer}>
+              <TouchableOpacity onPress={() => {}}>
+                <View style={styles.menuItem(0.2)}>
+                  <FontAwesome name="save" size={24} color="black" />
+                  <Text style={styles.optionItemName}>
+                    {"   "}Save to Local Storage
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {}}>
+                <View style={styles.menuItem(0)}>
+                  <AntDesign name="clouduploado" size={24} color="black" />
+                  <Text style={styles.optionItemName}>
+                    {"   "}Save to Cloud Storage{" "}
+                  </Text>
+                </View>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          <TouchableOpacity style={styles.optionsButton}>
-            <Ionicons
-              name="ellipsis-horizontal-circle"
-              size={34}
-              color="black"
-            />
-          </TouchableOpacity>
-        </View>
-      </View>
-      <KeyboardAvoidingView style={{ flex: 1 }} behavior="padding">
-        <ScrollView
-          ref={scrollViewRef}
-          contentContainerStyle={{ flexGrow: 1, padding: 8 }}
-        >
-          {chatState ? <EmptyListPlaceHolder /> : <ChatRowItem />}
-        </ScrollView>
-        <View style={styles.chatInputContainer}>
-          <TextInput
-            placeholder="Message LawSage..."
-            style={styles.chatInput}
-            selectionColor={COLORS.gray2}
-            onFocus={scrollToBottom}
-          />
-          <TouchableOpacity>
-            <View style={styles.chatButton}>
-              <AntDesign name="arrowup" size={20} color="white" />
+          <View style={styles.menuOptionsContainer}>
+            <Text style={styles.optionsTitleText}>Export Chat</Text>
+            <View style={styles.optionsContainer}>
+              <TouchableOpacity onPress={() => {}}>
+                <View style={styles.menuItem(0.2)}>
+                  <MaterialCommunityIcons
+                    name="code-json"
+                    size={24}
+                    color="black"
+                  />
+                  <Text style={styles.optionItemName}>
+                    {"   "}Export as JSON
+                  </Text>
+                </View>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => {}}>
+                <View style={styles.menuItem(0)}>
+                  <AntDesign name="pdffile1" size={24} color="black" />
+                  <Text style={styles.optionItemName}>
+                    {"   "}Export as PDF
+                  </Text>
+                </View>
+              </TouchableOpacity>
             </View>
-          </TouchableOpacity>
+          </View>
         </View>
-        <View style={styles.infoTextContainer}>
-          <Text style={styles.infoText}>
-            LawSage can make mistakes. It's recommended to confirm important
-            details.
-          </Text>
-        </View>
-      </KeyboardAvoidingView>
-      <StatusBar style="dark" />
-    </ImageBackground>
+      </BottomSheet>
+    </GestureHandlerRootView>
   );
 };
 
@@ -132,6 +225,9 @@ const styles = StyleSheet.create({
     fontStyle: "italic",
     color: COLORS.gray,
   },
+  modelCardExpandButton: {
+    paddingLeft: 10,
+  },
 
   chatInputContainer: {
     height: 50,
@@ -166,5 +262,31 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.tertiary,
     padding: 8,
     borderRadius: SIZES.small,
+  },
+  menuOptionsContainer: {
+    marginTop: 20,
+  },
+  optionsTitleText: {
+    fontFamily: "semibold",
+    fontSize: 18,
+  },
+  optionsContainer: {
+    marginTop: 10,
+    width: SIZES.width - 40,
+    flexWrap: "wrap",
+    borderColor: COLORS.gray,
+    borderWidth: 0.5,
+    borderRadius: 10,
+  },
+  menuItem: (borderBottomWidth) => ({
+    width: SIZES.width - 40,
+    borderBottomWidth: borderBottomWidth,
+    flexDirection: "row",
+    paddingVertical: 15,
+    paddingHorizontal: 10,
+    borderColor: COLORS.gray,
+  }),
+  optionItemName: {
+    fontFamily: "regular",
   },
 });

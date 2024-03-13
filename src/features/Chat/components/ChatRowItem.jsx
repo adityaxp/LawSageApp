@@ -1,7 +1,6 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
 import { COLORS } from "../../../infrastructure/theme";
-
 const PromptItem = () => {
   return (
     <View style={styles.promptContainer}>
@@ -12,8 +11,8 @@ const PromptItem = () => {
         <Text style={styles.nameTag}>You</Text>
         <View style={styles.queryContainer}>
           <Text style={styles.text}>
-            How does Indian law address the issue of forced labor and modern
-            slavery?
+            How does the Indian legal system handle cases of online harassment
+            and cyberbullying?
           </Text>
         </View>
       </View>
@@ -40,14 +39,16 @@ const ResponseItem = () => {
         <Text style={styles.nameTag}>LawSage v0.2</Text>
         <View style={styles.queryContainer}>
           <Text style={styles.text}>
-            Indian law addresses the issue of forced labor and modern slavery
-            through the "Bonded Labor System (Abolition) Act, 1976" and the
-            "Immoral Traffic (Prevention) Act, 1956". These laws prohibit
-            various forms of forced labor, including bonded labor and
-            trafficking for exploitation. They provide for the punishment of
-            offenders and rehabilitation of victims. For more detailed
-            information, refer to the respective acts or legal resources on
-            Indian labor and trafficking laws.
+            The Indian legal system addresses cases of online harassment and
+            cyberbullying through various laws and regulations. The Information
+            Technology Act, 2000, and its subsequent amendments provide legal
+            provisions to tackle cybercrimes, including online harassment and
+            cyberbullying. Additionally, the Indian Penal Code contains sections
+            related to offenses such as defamation, stalking, and harassment,
+            which can be applied to online behavior. Law enforcement agencies
+            investigate such cases, and offenders can face penalties under these
+            laws. {"\n\n"}References:{"\n"}- Information Technology Act, 2000{" "}
+            {"\n"}- Indian Penal Code
           </Text>
         </View>
       </View>
