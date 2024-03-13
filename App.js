@@ -3,9 +3,6 @@ import { StyleSheet, Text, View } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
-import { AuthStack } from "./src/infrastructure/navigation/AuthStack";
-import { ChatScreen } from "./src/features/Chat/screens/ChatScreen";
-import { ChatRowItem } from "./src/features/Chat/components/ChatRowItem";
 import { AppStack } from "./src/infrastructure/navigation/AppStack";
 
 export default function App() {

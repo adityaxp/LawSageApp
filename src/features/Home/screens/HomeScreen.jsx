@@ -1,4 +1,10 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+  ScrollView,
+} from "react-native";
 import React, { useState } from "react";
 import { COLORS, SIZES } from "../../../infrastructure/theme";
 import { AntDesign } from "@expo/vector-icons";
@@ -9,12 +15,15 @@ export const HomeScreen = ({ navigation }) => {
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
-    console.log(option);
   };
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={() => navigation.navigate("ChatScreen")}>
+      <TouchableOpacity
+        onPress={() =>
+          navigation.navigate("ChatScreen", { model: selectedOption })
+        }
+      >
         <View style={styles.newChatContainer}>
           <Text style={styles.text}>
             Experiencing legal issues? Start a new chat.
@@ -41,27 +50,94 @@ export const HomeScreen = ({ navigation }) => {
 
         <View style={styles.llmSelectionContainer}>
           <Text style={styles.modelTitleText}>LawSage LLM</Text>
+          <ScrollView style={{ padding: 5 }}>
+            <TouchableOpacity
+              style={
+                selectedOption === "law-sage-v0.2"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() => handleOptionSelect("law-sage-v0.2")}
+            >
+              <Text style={styles.optionText}>law-sage-v0.2</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={
+                selectedOption === "law-sage-v0.2-GGUF"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() => handleOptionSelect("law-sage-v0.2-GGUF")}
+            >
+              <Text style={styles.optionText}>law-sage-v0.2-GGUF</Text>
+            </TouchableOpacity>
 
-          <TouchableOpacity
-            style={
-              selectedOption === "option1"
-                ? styles.selectedOption
-                : styles.option
-            }
-            onPress={() => handleOptionSelect("option1")}
-          >
-            <Text>Option 1</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={
-              selectedOption === "option2"
-                ? styles.selectedOption
-                : styles.option
-            }
-            onPress={() => handleOptionSelect("option2")}
-          >
-            <Text>Option 2</Text>
-          </TouchableOpacity>
+            <TouchableOpacity
+              style={
+                selectedOption === "law-sage-v0.1"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() => handleOptionSelect("law-sage-v0.1")}
+            >
+              <Text style={styles.optionText}>law-sage-v0.1</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={
+                selectedOption === "option5"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() => handleOptionSelect("option5")}
+            >
+              <Text style={styles.optionText}>Option 5</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </View>
+
+        <View style={styles.RAGSelectionContainer}>
+          <Text style={styles.modelTitleText}>LawSage RAG</Text>
+          <ScrollView style={{ padding: 5 }}>
+            <TouchableOpacity
+              style={
+                selectedOption === "RAG - Central Acts Legislation"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() =>
+                handleOptionSelect("RAG - Central Acts Legislation")
+              }
+            >
+              <Text style={styles.optionText}>
+                RAG - Central Acts Legislation
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={
+                selectedOption === "RAG - State Acts Legislation"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() => handleOptionSelect("RAG - State Acts Legislation")}
+            >
+              <Text style={styles.optionText}>
+                RAG - State Acts Legislation
+              </Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={
+                selectedOption === "RAG - Constitution"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() => handleOptionSelect("RAG - Constitution")}
+            >
+              <Text style={styles.optionText}>RAG - Constitution</Text>
+            </TouchableOpacity>
+          </ScrollView>
         </View>
       </View>
 
@@ -128,5 +204,16 @@ const styles = StyleSheet.create({
     fontFamily: "semibold",
     padding: 5,
     fontSize: 17,
+  },
+  llmSelectionContainer: {
+    height: 210,
+    marginBottom: 20,
+  },
+  RAGSelectionContainer: {
+    height: 210,
+    marginBottom: 20,
+  },
+  optionText: {
+    fontFamily: "regular",
   },
 });
