@@ -9,9 +9,12 @@ import React, { useState } from "react";
 import { COLORS, SIZES } from "../../../infrastructure/theme";
 import { AntDesign } from "@expo/vector-icons";
 import { Skeleton } from "../../../components/Skeleton";
+import checkupLLMService from "../../../services/checkupLLMService";
+import hostAddress from "../../../utils/Hosts";
 
 export const HomeScreen = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const { connectionData, loading, error, refetch } = checkupLLMService();
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);
@@ -21,7 +24,13 @@ export const HomeScreen = ({ navigation }) => {
     <View style={styles.container}>
       <TouchableOpacity
         onPress={() =>
-          navigation.navigate("ChatScreen", { model: selectedOption })
+          connectionData
+            ? selectedOption
+              ? navigation.navigate("ChatScreen", { model: selectedOption })
+              : console.warn("No model selected!")
+            : console.warn(
+                "Can't react LLM service please connect to an instance."
+              )
         }
       >
         <View style={styles.newChatContainer}>
@@ -37,12 +46,52 @@ export const HomeScreen = ({ navigation }) => {
         </View>
       </TouchableOpacity>
       <View style={styles.homeContainer}>
-        <View style={styles.serviceStatusContainer}>
-          <AntDesign name="checkcircle" size={30} color="green" />
-          <Text style={styles.text}>
-            Connection Successful! {"\n"}(using V100 instance @ 192.168.31.229)
-          </Text>
-        </View>
+        {!loading ? (
+          error ? (
+            <View>
+              <View style={styles.serviceStatusContainer}>
+                <AntDesign name="closecircle" size={30} color="red" />
+                <Text style={styles.text}>
+                  Connection Failed! {"\nError: " + error}
+                </Text>
+              </View>
+              <TouchableOpacity
+                style={styles.retryButton}
+                onPress={() => {
+                  refetch();
+                }}
+              >
+                <Text style={styles.retryText}>Retry</Text>
+              </TouchableOpacity>
+            </View>
+          ) : connectionData ? (
+            <View style={styles.serviceStatusContainer}>
+              <AntDesign name="checkcircle" size={30} color="green" />
+              <Text style={styles.text}>
+                Connection Successful! {"\n"}(using {connectionData.deviceName}{" "}
+                instance @ {hostAddress})
+              </Text>
+            </View>
+          ) : (
+            <View style={styles.serviceStatusContainer}>
+              <AntDesign name="closecircle" size={30} color="red" />
+              <Text style={styles.text}>
+                LLM service down! {"\n"}
+                instance @ {hostAddress}
+              </Text>
+            </View>
+          )
+        ) : (
+          <View style={styles.serviceStatusContainer}>
+            <Skeleton width={25} height={25} radius={30} />
+            <Skeleton
+              width={SIZES.width - 100}
+              height={20}
+              radius={1}
+              margin={20}
+            />
+          </View>
+        )}
       </View>
 
       <View style={styles.serviceSelectionContainer}>
@@ -51,6 +100,16 @@ export const HomeScreen = ({ navigation }) => {
         <View style={styles.llmSelectionContainer}>
           <Text style={styles.modelTitleText}>LawSage LLM</Text>
           <ScrollView style={{ padding: 5 }}>
+            <TouchableOpacity
+              style={
+                selectedOption === "law-sage-v0.3"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() => handleOptionSelect("law-sage-v0.3")}
+            >
+              <Text style={styles.optionText}>law-sage-v0.3</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={
                 selectedOption === "law-sage-v0.2"
@@ -81,17 +140,6 @@ export const HomeScreen = ({ navigation }) => {
               onPress={() => handleOptionSelect("law-sage-v0.1")}
             >
               <Text style={styles.optionText}>law-sage-v0.1</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={
-                selectedOption === "option5"
-                  ? styles.selectedOption
-                  : styles.option
-              }
-              onPress={() => handleOptionSelect("option5")}
-            >
-              <Text style={styles.optionText}>Option 5</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
@@ -140,8 +188,6 @@ export const HomeScreen = ({ navigation }) => {
           </ScrollView>
         </View>
       </View>
-
-      {/* <Skeleton width={250} height={20} radius={0} /> */}
     </View>
   );
 };
@@ -177,10 +223,11 @@ const styles = StyleSheet.create({
   },
   serviceStatusContainer: {
     flexDirection: "row",
-    marginBottom: 30,
+    marginBottom: 10,
   },
   modelHeadingText: {
     fontFamily: "bold",
+    marginTop: 10,
     fontSize: 34,
     padding: 5,
   },
@@ -207,7 +254,7 @@ const styles = StyleSheet.create({
   },
   llmSelectionContainer: {
     height: 210,
-    marginBottom: 20,
+    marginBottom: 10,
   },
   RAGSelectionContainer: {
     height: 210,
@@ -215,5 +262,19 @@ const styles = StyleSheet.create({
   },
   optionText: {
     fontFamily: "regular",
+  },
+  retryButton: {
+    height: 50,
+    width: "100%",
+    marginTop: 10,
+    backgroundColor: COLORS.tertiary,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 12,
+  },
+  retryText: {
+    fontFamily: "medium",
+    color: COLORS.white,
+    fontSize: 18,
   },
 });
