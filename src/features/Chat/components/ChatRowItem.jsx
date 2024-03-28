@@ -36,7 +36,7 @@ const ResponseItem = () => {
         />
       </View>
       <View style={{ flex: 1 }}>
-        <Text style={styles.nameTag}>LawSage v0.2</Text>
+        <Text style={styles.nameTag}>LawSage </Text>
         <View style={styles.queryContainer}>
           <Text style={styles.text}>
             The Indian legal system addresses cases of online harassment and
