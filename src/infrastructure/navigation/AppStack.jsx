@@ -23,18 +23,6 @@ export const AppStack = () => {
           component={ChatScreen}
           options={{ headerShown: false }}
         />
-
-        <Stack.Screen
-          name="LoginScreen"
-          component={LoginScreen}
-          options={{ headerShown: false }}
-        />
-
-        <Stack.Screen
-          name="RegisterScreen"
-          component={RegisterScreen}
-          options={{ headerShown: false }}
-        />
       </Stack.Navigator>
     </NavigationContainer>
   );

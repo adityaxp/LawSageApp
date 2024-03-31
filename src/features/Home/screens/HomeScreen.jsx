@@ -4,6 +4,7 @@ import {
   TouchableOpacity,
   View,
   ScrollView,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { COLORS, SIZES } from "../../../infrastructure/theme";
@@ -27,9 +28,10 @@ export const HomeScreen = ({ navigation }) => {
           connectionData
             ? selectedOption
               ? navigation.navigate("ChatScreen", { model: selectedOption })
-              : console.warn("No model selected!")
-            : console.warn(
-                "Can't react LLM service please connect to an instance."
+              : Alert.alert("LawSage", "No model selected!")
+            : Alert.alert(
+                "LawSage",
+                "Can't reach LLM service please connect to an instance."
               )
         }
       >
