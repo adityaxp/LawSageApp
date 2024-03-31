@@ -9,6 +9,7 @@ import {
   TextInput,
   ScrollView,
   KeyboardAvoidingView,
+  Keyboard,
 } from "react-native";
 import React, { useRef, useState } from "react";
 import { COLORS, SIZES } from "../../../infrastructure/theme";
@@ -22,13 +23,14 @@ import {
 import { EmptyListPlaceHolder } from "../components/EmptyListPlaceHolder";
 import { ChatRowItem } from "../components/ChatRowItem";
 import { useRoute } from "@react-navigation/native";
+import { FlashList } from "@shopify/flash-list";
 
 export const ChatScreen = ({ navigation }) => {
   const bottomSheetRef = useRef(null);
   const snapPoints = [SIZES.height - SIZES.height + 0.01, "45%", "50%"];
 
   const scrollViewRef = useRef();
-  const [chatState, setChatState] = useState(false);
+  const [chatInputText, setChatInputText] = useState("");
 
   const scrollToBottom = () => {
     scrollViewRef.current.scrollToEnd({ animated: true });
@@ -40,6 +42,20 @@ export const ChatScreen = ({ navigation }) => {
 
   const route = useRoute();
   const { model } = route.params;
+
+  const handleTextChange = (newChatText) => {
+    setChatInputText(newChatText);
+  };
+
+  const handleAddChatData = () => {
+    setChatData((prevChatData) => [...prevChatData, { prompt: chatInputText }]);
+    setChatInputText("");
+    Keyboard.dismiss();
+    scrollToBottom();
+  };
+
+  const [chatData, setChatData] = useState([]);
+
   return (
     <GestureHandlerRootView style={styles.container}>
       <ImageBackground
@@ -88,16 +104,25 @@ export const ChatScreen = ({ navigation }) => {
             ref={scrollViewRef}
             contentContainerStyle={{ flexGrow: 1, padding: 8 }}
           >
-            {chatState ? <EmptyListPlaceHolder /> : <ChatRowItem />}
+            {chatData.length <= 0 ? (
+              <EmptyListPlaceHolder />
+            ) : (
+              <FlashList
+                data={chatData}
+                renderItem={({ item }) => <ChatRowItem prompt={item.prompt} />}
+                estimatedItemSize={273}
+              />
+            )}
           </ScrollView>
           <View style={styles.chatInputContainer}>
             <TextInput
               placeholder="Message LawSage..."
               style={styles.chatInput}
               selectionColor={COLORS.gray2}
-              onFocus={scrollToBottom}
+              value={chatInputText}
+              onChangeText={handleTextChange}
             />
-            <TouchableOpacity>
+            <TouchableOpacity onPress={handleAddChatData}>
               <View style={styles.chatButton}>
                 <AntDesign name="arrowup" size={20} color="white" />
               </View>
@@ -195,6 +220,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.lightWhite,
     borderBottomLeftRadius: 20,
     borderBottomRightRadius: 20,
+    marginBottom: 5,
     flexWrap: "wrap",
   },
   toolBarItems: {

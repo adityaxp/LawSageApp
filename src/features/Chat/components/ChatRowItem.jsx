@@ -1,26 +1,36 @@
 import { StyleSheet, Text, View, Image } from "react-native";
 import React from "react";
-import { COLORS } from "../../../infrastructure/theme";
-const PromptItem = () => {
+import { COLORS, SIZES } from "../../../infrastructure/theme";
+import { Skeleton } from "../../../components/Skeleton";
+import { TypeWriter } from "../../../components/TypeWriter";
+import { AntDesign, Feather } from "@expo/vector-icons";
+import { TouchableOpacity } from "react-native-gesture-handler";
+import * as Clipboard from "expo-clipboard";
+import Toast from "react-native-simple-toast";
+import RAGResponseSevice from "../../../services/RAGResponseSevice";
+
+const PromptItem = ({ prompt }) => {
   return (
     <View style={styles.promptContainer}>
       <View style={styles.avatarContainer}>
         <Text style={styles.avatarText}>A</Text>
       </View>
-      <View style={{ flex: 1 }}>
+      <View>
         <Text style={styles.nameTag}>You</Text>
         <View style={styles.queryContainer}>
-          <Text style={styles.text}>
-            How does the Indian legal system handle cases of online harassment
-            and cyberbullying?
-          </Text>
+          <Text style={styles.text}>{prompt}</Text>
         </View>
       </View>
     </View>
   );
 };
 
-const ResponseItem = () => {
+const ResponseItem = ({ loader, answer }) => {
+  const copyToClipboard = async (response) => {
+    await Clipboard.setStringAsync(response);
+    Toast.show("Text copied to clipboard!");
+  };
+
   return (
     <View style={styles.promptContainer}>
       <View style={styles.avatarContainer}>
@@ -35,33 +45,60 @@ const ResponseItem = () => {
           }}
         />
       </View>
-      <View style={{ flex: 1 }}>
-        <Text style={styles.nameTag}>LawSage </Text>
+      <View>
+        <Text style={styles.nameTag}>LawSage</Text>
         <View style={styles.queryContainer}>
-          <Text style={styles.text}>
-            The Indian legal system addresses cases of online harassment and
-            cyberbullying through various laws and regulations. The Information
-            Technology Act, 2000, and its subsequent amendments provide legal
-            provisions to tackle cybercrimes, including online harassment and
-            cyberbullying. Additionally, the Indian Penal Code contains sections
-            related to offenses such as defamation, stalking, and harassment,
-            which can be applied to online behavior. Law enforcement agencies
-            investigate such cases, and offenders can face penalties under these
-            laws. {"\n\n"}References:{"\n"}- Information Technology Act, 2000{" "}
-            {"\n"}- Indian Penal Code
-          </Text>
+          {loader ? (
+            <View>
+              <Skeleton
+                width={SIZES.width - 90}
+                height={200}
+                radius={5}
+                margin={10}
+              />
+            </View>
+          ) : (
+            <TypeWriter text={answer} speed={10} />
+          )}
+          <View style={styles.interactionsContainer}>
+            <TouchableOpacity>
+              <AntDesign name="like2" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <AntDesign name="dislike2" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => {
+                copyToClipboard(answer);
+              }}
+            >
+              <Feather name="clipboard" size={24} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity>
+              <AntDesign name="infocirlceo" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
         </View>
       </View>
     </View>
   );
 };
 
-export const ChatRowItem = () => {
+export const ChatRowItem = ({ prompt }) => {
+  const { responseData, loading, error } = RAGResponseSevice({ prompt });
   return (
     <View style={styles.cardContainer}>
-      <PromptItem />
+      <PromptItem prompt={prompt} />
       <View style={styles.line} />
-      <ResponseItem />
+      {loading ? (
+        <ResponseItem loader={loading} answer={""} />
+      ) : error ? (
+        <ResponseItem loader={loading} answer={error} />
+      ) : responseData ? (
+        <ResponseItem loader={loading} answer={responseData.response} />
+      ) : (
+        <ResponseItem loader={loading} answer={""} />
+      )}
     </View>
   );
 };
@@ -95,20 +132,29 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   nameTag: {
-    paddingLeft: 10,
-    paddingTop: 2.5,
+    marginLeft: 10,
+    marginTop: 2.5,
+    marginBottom: 10,
     fontFamily: "bold",
     fontSize: 16,
   },
   text: {
     paddingLeft: 10,
     paddingRight: 10,
-    textAlign: "auto",
+    textAlign: "justify",
     fontFamily: "regular",
   },
   line: {
     borderBottomColor: COLORS.gray2,
     borderBottomWidth: 0.5,
     marginBottom: 10,
+  },
+  queryContainer: {
+    marginRight: 45,
+  },
+  interactionsContainer: {
+    marginTop: 10,
+    flexDirection: "row",
+    justifyContent: "space-evenly",
   },
 });
