@@ -1,9 +1,12 @@
+import React, { useState, useEffect, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
-import { useCallback } from "react";
-import { AppStack } from "./src/infrastructure/navigation/AppStack";
+import { Navigation } from "./src/infrastructure/navigation";
+import { initializeApp } from "@firebase/app";
+import firebaseConfigArgs from "./src/utils/Firebase";
+import { getAuth, onAuthStateChanged } from "@firebase/auth";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -15,22 +18,33 @@ export default function App() {
     semibold: require("./assets/fonts/Poppins-SemiBold.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
+  const [authenticated, setAuthenticated] = useState(false);
+
+  const app = initializeApp(firebaseConfigArgs);
+  const auth = getAuth(app);
+
+  useEffect(() => {
+    const loadFontsAndHideSplashScreen = async () => {
+      if (fontsLoaded) {
+        await SplashScreen.hideAsync();
+      }
+    };
+
+    loadFontsAndHideSplashScreen();
   }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setAuthenticated(!!user);
+      console.log(user);
+    });
+
+    return () => unsubscribe();
+  }, [auth]);
 
   return (
     <>
-      {/* <AuthStack /> */}
-      {/* <ChatScreen /> */}
-      {/* <ChatRowItem /> */}
-      <AppStack />
+      {fontsLoaded && <Navigation isAuthenticated={authenticated} />}
       <StatusBar style="dark" />
     </>
   );
