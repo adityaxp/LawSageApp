@@ -4,8 +4,15 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import styles from "./styles/passwordEditText.style";
 
-export const PasswordEditText = () => {
+export const PasswordEditText = ({ onPasswordChange }) => {
   const [obsecureText, setObsecureText] = useState(true);
+  const [password, setPassword] = useState("");
+
+  const handlePasswordChange = (text) => {
+    setPassword(text);
+    onPasswordChange(text);
+  };
+
   return (
     <View style={styles.textInputContainer}>
       <MaterialCommunityIcons
@@ -18,6 +25,8 @@ export const PasswordEditText = () => {
         placeholder="Enter password"
         secureTextEntry={obsecureText}
         style={styles.textInput}
+        value={password}
+        onChangeText={handlePasswordChange}
       />
       <TouchableOpacity onPress={() => setObsecureText(!obsecureText)}>
         <Feather

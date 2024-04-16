@@ -1,12 +1,23 @@
 import { View, Text, ScrollView, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useState } from "react";
 import { Background } from "../components/Background";
 import { EmailEditText } from "../components/EmailEditText";
 import { PasswordEditText } from "../components/PasswordEditText";
 import styles from "./styles/loginscreen.style";
-import { Button } from "../../../components/Button";
+import { LoginOrSignUpButton } from "../components/LoginOrSignUpButton";
 
 export const LoginScreen = ({ navigation }) => {
+  const [userEmail, setUserEmail] = useState("");
+  const [userPassword, setUserPassword] = useState("");
+
+  const handleEmailChange = (text) => {
+    setUserEmail(text);
+  };
+
+  const handlePasswordChange = (text) => {
+    setUserPassword(text);
+  };
+
   return (
     <ScrollView style={styles.container}>
       <Background />
@@ -14,9 +25,16 @@ export const LoginScreen = ({ navigation }) => {
         <Text style={styles.text}>Login</Text>
       </View>
       <View style={styles.loginContainer}>
-        <EmailEditText />
-        <PasswordEditText />
-        <Button title={"Log In"} isValid={true} loader={false} />
+        <EmailEditText onEmailChange={handleEmailChange} />
+        <PasswordEditText onPasswordChange={handlePasswordChange} />
+        <LoginOrSignUpButton
+          title={"Log In"}
+          isValid={true}
+          loader={false}
+          userEmail={userEmail}
+          userPassword={userPassword}
+          newUser={false}
+        />
         <View style={styles.registerContainer}>
           <Text style={styles.memberText}>Not a member? </Text>
           <TouchableOpacity
