@@ -11,11 +11,18 @@ import { COLORS, SIZES } from "../../../infrastructure/theme";
 import { AntDesign } from "@expo/vector-icons";
 import { Skeleton } from "../../../components/Skeleton";
 import checkupLLMService from "../../../services/checkupLLMService";
-import hostAddress from "../../../utils/Hosts";
+import hostAddress from "../../../env/Hosts";
+import { useAuth } from "../../../context/AuthContext";
 
 export const HomeScreen = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const { connectionData, loading, error, refetch } = checkupLLMService();
+  const { user } = useAuth();
+  if (!!user) {
+    console.log(user.displayName, user.uid);
+  } else {
+    console.log("No username");
+  }
 
   const handleOptionSelect = (option) => {
     setSelectedOption(option);

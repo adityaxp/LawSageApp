@@ -4,6 +4,9 @@ import { COLORS, SIZES } from "../../../../infrastructure/theme";
 const styles = StyleSheet.create({
   container: {
     marginTop: StatusBar.currentHeight,
+    backgroundColor: "#FFF",
+    paddingTop: 50,
+    paddingBottom: 50,
   },
   textContainer: {
     justifyContent: "center",

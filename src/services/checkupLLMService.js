@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import hostAddress from "../utils/Hosts";
+import hostAddress from "../env/Hosts";
 
 const checkupLLMService = () => {
   const [connectionData, setConnectionData] = useState(null);

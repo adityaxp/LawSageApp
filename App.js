@@ -1,12 +1,10 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useEffect } from "react";
 import { StatusBar } from "expo-status-bar";
 import { StyleSheet } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { Navigation } from "./src/infrastructure/navigation";
-import { initializeApp } from "@firebase/app";
-import firebaseConfigArgs from "./src/utils/Firebase";
-import { getAuth, onAuthStateChanged } from "@firebase/auth";
+import { AuthProvider } from "./src/context/AuthContext";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -18,11 +16,6 @@ export default function App() {
     semibold: require("./assets/fonts/Poppins-SemiBold.ttf"),
   });
 
-  const [authenticated, setAuthenticated] = useState(false);
-
-  const app = initializeApp(firebaseConfigArgs);
-  const auth = getAuth(app);
-
   useEffect(() => {
     const loadFontsAndHideSplashScreen = async () => {
       if (fontsLoaded) {
@@ -33,19 +26,9 @@ export default function App() {
     loadFontsAndHideSplashScreen();
   }, [fontsLoaded]);
 
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      setAuthenticated(!!user);
-      console.log(user);
-    });
-
-    return () => unsubscribe();
-  }, [auth]);
-
   return (
     <>
-      {fontsLoaded && <Navigation isAuthenticated={authenticated} />}
-      <StatusBar style="dark" />
+      <AuthProvider>{fontsLoaded && <Navigation />}</AuthProvider>
     </>
   );
 }

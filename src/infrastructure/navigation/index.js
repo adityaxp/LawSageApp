@@ -1,8 +1,10 @@
-import React, { useContext } from "react";
 import { AppStack } from "./AppStack";
 import { AuthStack } from "./AuthStack";
 import { NavigationContainer } from "@react-navigation/native";
-export const Navigation = ({ isAuthenticated }) => {
+import { useAuth } from "../../context/AuthContext";
+export const Navigation = () => {
+  const { isAuthenticated } = useAuth();
+
   return (
     <NavigationContainer>
       {isAuthenticated ? <AppStack /> : <AuthStack />}

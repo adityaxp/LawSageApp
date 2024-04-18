@@ -3,20 +3,19 @@ import {
   Text,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { COLORS } from "../../../infrastructure/theme";
-import { initializeApp } from "@firebase/app";
 import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
-  getAuth,
+  updateProfile,
 } from "@firebase/auth";
-import firebaseConfigArgs from "../../../utils/Firebase";
+import { useAuth } from "../../../context/AuthContext";
 
 export const LoginOrSignUpButton = ({
   title,
-  onPress,
   isValid,
   loader,
   userName,
@@ -24,27 +23,26 @@ export const LoginOrSignUpButton = ({
   userPassword,
   newUser,
 }) => {
-  newUser
-    ? console.log(userName, userEmail, userPassword)
-    : console.log(userEmail, userPassword);
-
   const [loaderState, setLoaderState] = useState(loader);
 
-  const app = initializeApp(firebaseConfigArgs);
-  const auth = getAuth(app);
+  const { auth } = useAuth();
 
   const handleOnPress = async () => {
     setLoaderState(true);
     try {
       if (newUser) {
         await createUserWithEmailAndPassword(auth, userEmail, userPassword);
+
+        await updateProfile(auth.currentUser, { displayName: userName }).catch(
+          (err) => Alert.alert("LawSage", err.message)
+        );
       } else {
         await signInWithEmailAndPassword(auth, userEmail, userPassword);
       }
       console.log("Logged In");
       setLoaderState(false);
     } catch (error) {
-      console.log("Authentication Error:", error);
+      Alert.alert("LawSage", error.message);
       setLoaderState(false);
     }
   };

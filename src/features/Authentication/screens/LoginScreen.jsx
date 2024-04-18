@@ -43,13 +43,6 @@ export const LoginScreen = ({ navigation }) => {
             <Text style={styles.registerText}>Register</Text>
           </TouchableOpacity>
         </View>
-
-        <TouchableOpacity
-          style={{ marginTop: 20 }}
-          onPress={() => navigation.navigate("BottomTabNavigation")}
-        >
-          <Text style={styles.registerText}>ByPass AUTH</Text>
-        </TouchableOpacity>
       </View>
     </ScrollView>
   );

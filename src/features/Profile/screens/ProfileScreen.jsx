@@ -7,8 +7,12 @@ import {
   SimpleLineIcons,
   FontAwesome,
 } from "@expo/vector-icons";
+import { useAuth } from "../../../context/AuthContext";
+import { signOut } from "@firebase/auth";
 
 const ProfileMenu = ({ navigation }) => {
+  const { auth } = useAuth();
+
   return (
     <View style={styles.menuWrapper}>
       <TouchableOpacity onPress={() => {}}>
@@ -39,7 +43,12 @@ const ProfileMenu = ({ navigation }) => {
         </View>
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => navigation.navigate("LoginScreen")}>
+      <TouchableOpacity
+        onPress={async () => {
+          await signOut(auth);
+          navigation.navigate("LoginScreen");
+        }}
+      >
         <View style={styles.menuItem(0.2)}>
           <AntDesign name="logout" color={COLORS.black} size={24} />
           <Text style={styles.name}>{"   "}Logout</Text>
@@ -54,7 +63,7 @@ export const ProfileScreen = ({ navigation }) => {
     <View style={styles.container}>
       <View style={{ width: "100%" }}>
         <Image
-          source={require("../../../../assets/images/profile-background.jpg")}
+          source={require("../../../../assets/images/auth-background.jpg")}
           style={styles.cover}
         />
       </View>
