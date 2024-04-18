@@ -34,4 +34,4 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-src/utils/Firebase.js
+src/env/Firebase.js
