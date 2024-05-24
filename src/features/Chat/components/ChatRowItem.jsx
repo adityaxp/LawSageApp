@@ -8,6 +8,7 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Clipboard from "expo-clipboard";
 import Toast from "react-native-simple-toast";
 import RAGResponseSevice from "../../../services/RAGResponseSevice";
+import LLMResponseService from "../../../services/LLMResponseService";
 
 const PromptItem = ({ prompt }) => {
   return (
@@ -45,17 +46,21 @@ const ResponseItem = ({ loader, answer }) => {
           }}
         />
       </View>
-      <View>
+      <View style={{ minHeight: loader ? 0 : 0 }}>
         <Text style={styles.nameTag}>LawSage</Text>
         <View style={styles.queryContainer}>
           {loader ? (
             <View>
-              <Skeleton
-                width={SIZES.width - 90}
-                height={200}
-                radius={5}
-                margin={10}
-              />
+              {[...Array(3)].map((_, index) => (
+                <Skeleton
+                  key={index}
+                  width={SIZES.width - 90}
+                  height={20}
+                  radius={6}
+                  margin={10}
+                  marginBottom={10}
+                />
+              ))}
             </View>
           ) : (
             <TypeWriter text={answer} speed={10} />
@@ -84,8 +89,12 @@ const ResponseItem = ({ loader, answer }) => {
   );
 };
 
-export const ChatRowItem = ({ prompt }) => {
-  const { responseData, loading, error } = RAGResponseSevice({ prompt });
+export const ChatRowItem = ({ prompt, model }) => {
+  const { responseData, loading, error } =
+    model == "LAWSAGE"
+      ? LLMResponseService({ prompt })
+      : RAGResponseSevice({ prompt });
+
   return (
     <View style={styles.cardContainer}>
       <PromptItem prompt={prompt} />
@@ -95,7 +104,7 @@ export const ChatRowItem = ({ prompt }) => {
       ) : error ? (
         <ResponseItem loader={loading} answer={error} />
       ) : responseData ? (
-        <ResponseItem loader={loading} answer={responseData.response} />
+        <ResponseItem loader={loading} answer={responseData.response.content} />
       ) : (
         <ResponseItem loader={loading} answer={""} />
       )}
@@ -112,16 +121,18 @@ const styles = StyleSheet.create({
     borderColor: COLORS.gray2,
     borderWidth: 0.9,
     marginBottom: 10,
+    elevation: 5,
   },
   promptContainer: {
     padding: 10,
     flexDirection: "row",
   },
+
   avatarContainer: {
     width: 30,
     height: 30,
     borderRadius: 25,
-    borderWidth: 0.1,
+    borderWidth: 0.05,
     borderColor: COLORS.gray2,
     backgroundColor: "#0da33f",
     alignItems: "center",
@@ -145,15 +156,14 @@ const styles = StyleSheet.create({
     fontFamily: "regular",
   },
   line: {
-    borderBottomColor: COLORS.gray2,
+    borderColor: COLORS.gray2,
     borderBottomWidth: 0.5,
-    marginBottom: 10,
   },
   queryContainer: {
     marginRight: 45,
   },
   interactionsContainer: {
-    marginTop: 10,
+    marginTop: 15,
     flexDirection: "row",
     justifyContent: "space-evenly",
   },

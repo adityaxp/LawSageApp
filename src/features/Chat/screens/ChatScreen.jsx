@@ -79,14 +79,7 @@ export const ChatScreen = ({ navigation }) => {
               <Text style={styles.modelTagText} numberOfLines={1}>
                 {model}
               </Text>
-              <AntDesign
-                name="down"
-                size={14}
-                color="gray"
-                style={styles.modelCardExpandButton}
-              />
             </View>
-
             <TouchableOpacity
               style={styles.optionsButton}
               onPress={openBottomSheet}
@@ -109,7 +102,9 @@ export const ChatScreen = ({ navigation }) => {
             ) : (
               <FlashList
                 data={chatData}
-                renderItem={({ item }) => <ChatRowItem prompt={item.prompt} />}
+                renderItem={({ item }) => (
+                  <ChatRowItem prompt={item.prompt} model={"LAWSAGE"} />
+                )}
                 estimatedItemSize={273}
               />
             )}

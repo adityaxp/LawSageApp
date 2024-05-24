@@ -18,8 +18,9 @@ export const HomeScreen = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState(null);
   const { connectionData, loading, error, refetch } = checkupLLMService();
   const { user } = useAuth();
+
   if (!!user) {
-    console.log(user.displayName, user.uid);
+    // console.log(user.displayName, user.uid);
   } else {
     console.log("No username");
   }
@@ -97,7 +98,7 @@ export const HomeScreen = ({ navigation }) => {
               width={SIZES.width - 100}
               height={20}
               radius={1}
-              margin={20}
+              marginLeft={20}
             />
           </View>
         )}
@@ -109,6 +110,17 @@ export const HomeScreen = ({ navigation }) => {
         <View style={styles.llmSelectionContainer}>
           <Text style={styles.modelTitleText}>LawSage LLM</Text>
           <ScrollView style={{ padding: 5 }}>
+            <TouchableOpacity
+              style={
+                selectedOption === "law-sage-v0.3-GGUF"
+                  ? styles.selectedOption
+                  : styles.option
+              }
+              onPress={() => handleOptionSelect("law-sage-v0.3-GGUF")}
+            >
+              <Text style={styles.optionText}>law-sage-v0.3-GGUF</Text>
+            </TouchableOpacity>
+
             <TouchableOpacity
               style={
                 selectedOption === "law-sage-v0.3"
