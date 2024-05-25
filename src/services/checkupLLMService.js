@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import hostAddress from "../env/Hosts";
+import {} from "../env/Hosts";
+import { hostAddress, LawSagePort } from "../env/Hosts";
 
 const checkupLLMService = () => {
   const [connectionData, setConnectionData] = useState(null);
@@ -19,7 +20,7 @@ const checkupLLMService = () => {
   };
 
   const fetchData = async () => {
-    const endpoint = `http://${hostAddress}/CHECK`;
+    const endpoint = `http://${hostAddress}:${LawSagePort}/CHECK`;
 
     setLoader(true);
     try {

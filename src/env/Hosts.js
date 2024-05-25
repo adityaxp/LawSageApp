@@ -1,3 +1,5 @@
-const hostAddress = "192.168.1.5:8001";
+const hostAddress = "192.168.1.8";
+const LawSagePort = "8001";
+const RAGPort = "8002";
 
-export default hostAddress;
+export { hostAddress, LawSagePort, RAGPort };

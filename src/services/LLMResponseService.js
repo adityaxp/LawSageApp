@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useEffect } from "react";
-import hostAddress from "../env/Hosts";
+import { hostAddress, LawSagePort } from "../env/Hosts";
 
 const LLMResponseService = ({ prompt }) => {
   const [responseData, setResponseData] = useState(null);
@@ -12,8 +12,7 @@ const LLMResponseService = ({ prompt }) => {
   }, []);
 
   const getRAGResponse = async () => {
-    const endpoint = `http://${hostAddress}/LAW-SAGE-GGUF`;
-
+    const endpoint = `http://${hostAddress}:${LawSagePort}/LAW-SAGE`;
     setLoader(true);
     try {
       const response = await axios.post(endpoint, {
