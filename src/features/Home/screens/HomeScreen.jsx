@@ -5,17 +5,19 @@ import {
   View,
   ScrollView,
   Alert,
+  Platform,
 } from "react-native";
 import React, { useState } from "react";
 import { COLORS, SIZES } from "../../../infrastructure/theme";
 import { AntDesign } from "@expo/vector-icons";
 import { Skeleton } from "../../../components/Skeleton";
 import checkupLLMService from "../../../services/checkupLLMService";
-import hostAddress from "../../../env/Hosts";
+import { hostAddress } from "../../../env/Hosts";
 import { useAuth } from "../../../context/AuthContext";
 
 export const HomeScreen = ({ navigation }) => {
   const [selectedOption, setSelectedOption] = useState(null);
+  const [hookParams, setHookParams] = useState(null);
   const { connectionData, loading, error, refetch } = checkupLLMService();
   const { user } = useAuth();
 
@@ -25,8 +27,9 @@ export const HomeScreen = ({ navigation }) => {
     console.log("No username");
   }
 
-  const handleOptionSelect = (option) => {
-    setSelectedOption(option);
+  const handleOptionSelect = (option, modelTag) => {
+    setSelectedOption(modelTag);
+    setHookParams(option);
   };
 
   return (
@@ -35,7 +38,10 @@ export const HomeScreen = ({ navigation }) => {
         onPress={() =>
           connectionData
             ? selectedOption
-              ? navigation.navigate("ChatScreen", { model: selectedOption })
+              ? navigation.navigate("ChatScreen", {
+                  model: selectedOption,
+                  hookParams: hookParams,
+                })
               : Alert.alert("LawSage", "No model selected!")
             : Alert.alert(
                 "LawSage",
@@ -116,7 +122,9 @@ export const HomeScreen = ({ navigation }) => {
                   ? styles.selectedOption
                   : styles.option
               }
-              onPress={() => handleOptionSelect("law-sage-v0.3-GGUF")}
+              onPress={() =>
+                handleOptionSelect("LawSage", "law-sage-v0.3-GGUF")
+              }
             >
               <Text style={styles.optionText}>law-sage-v0.3-GGUF</Text>
             </TouchableOpacity>
@@ -127,7 +135,7 @@ export const HomeScreen = ({ navigation }) => {
                   ? styles.selectedOption
                   : styles.option
               }
-              onPress={() => handleOptionSelect("law-sage-v0.3")}
+              onPress={() => handleOptionSelect("LawSage", "law-sage-v0.3")}
             >
               <Text style={styles.optionText}>law-sage-v0.3</Text>
             </TouchableOpacity>
@@ -137,7 +145,7 @@ export const HomeScreen = ({ navigation }) => {
                   ? styles.selectedOption
                   : styles.option
               }
-              onPress={() => handleOptionSelect("law-sage-v0.2")}
+              onPress={() => handleOptionSelect("LawSage", "law-sage-v0.2")}
             >
               <Text style={styles.optionText}>law-sage-v0.2</Text>
             </TouchableOpacity>
@@ -147,7 +155,9 @@ export const HomeScreen = ({ navigation }) => {
                   ? styles.selectedOption
                   : styles.option
               }
-              onPress={() => handleOptionSelect("law-sage-v0.2-GGUF")}
+              onPress={() =>
+                handleOptionSelect("LawSage", "law-sage-v0.2-GGUF")
+              }
             >
               <Text style={styles.optionText}>law-sage-v0.2-GGUF</Text>
             </TouchableOpacity>
@@ -158,7 +168,7 @@ export const HomeScreen = ({ navigation }) => {
                   ? styles.selectedOption
                   : styles.option
               }
-              onPress={() => handleOptionSelect("law-sage-v0.1")}
+              onPress={() => handleOptionSelect("LawSage", "law-sage-v0.1")}
             >
               <Text style={styles.optionText}>law-sage-v0.1</Text>
             </TouchableOpacity>
@@ -175,7 +185,10 @@ export const HomeScreen = ({ navigation }) => {
                   : styles.option
               }
               onPress={() =>
-                handleOptionSelect("RAG - Central Acts Legislation")
+                handleOptionSelect(
+                  "RAG_central_acts",
+                  "RAG - Central Acts Legislation"
+                )
               }
             >
               <Text style={styles.optionText}>
@@ -189,7 +202,12 @@ export const HomeScreen = ({ navigation }) => {
                   ? styles.selectedOption
                   : styles.option
               }
-              onPress={() => handleOptionSelect("RAG - State Acts Legislation")}
+              onPress={() =>
+                handleOptionSelect(
+                  "RAG_state_acts",
+                  "RAG - State Acts Legislation"
+                )
+              }
             >
               <Text style={styles.optionText}>
                 RAG - State Acts Legislation
@@ -202,7 +220,9 @@ export const HomeScreen = ({ navigation }) => {
                   ? styles.selectedOption
                   : styles.option
               }
-              onPress={() => handleOptionSelect("RAG - Constitution")}
+              onPress={() =>
+                handleOptionSelect("RAG_constitution", "RAG - Constitution")
+              }
             >
               <Text style={styles.optionText}>RAG - Constitution</Text>
             </TouchableOpacity>

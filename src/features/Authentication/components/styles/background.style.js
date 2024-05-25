@@ -1,4 +1,4 @@
-import { StyleSheet } from "react-native";
+import { Platform, StyleSheet } from "react-native";
 import { SIZES, COLORS } from "../../../../infrastructure/theme";
 
 const styles = StyleSheet.create({
@@ -14,14 +14,17 @@ const styles = StyleSheet.create({
     fontFamily: "bold",
     color: COLORS.white,
     fontSize: 40,
-    marginTop: SIZES.statusBarHeight,
+    marginTop:
+      Platform.OS === "ios"
+        ? SIZES.statusBarHeight + 25
+        : SIZES.statusBarHeight,
     marginHorizontal: 20,
     textShadowColor: "rgba(0, 0, 0, 0.75)",
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 10,
   },
   textCycler: {
-    marginTop: SIZES.xxSmall,
+    marginTop: SIZES.small,
   },
   curve: {
     position: "absolute",

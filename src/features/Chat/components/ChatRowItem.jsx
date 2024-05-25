@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, Text, View, Image, Platform } from "react-native";
 import React from "react";
 import { COLORS, SIZES } from "../../../infrastructure/theme";
 import { Skeleton } from "../../../components/Skeleton";
@@ -6,7 +6,6 @@ import { TypeWriter } from "../../../components/TypeWriter";
 import { AntDesign, Feather } from "@expo/vector-icons";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Clipboard from "expo-clipboard";
-import Toast from "react-native-simple-toast";
 import RAGResponseSevice from "../../../services/RAGResponseSevice";
 import LLMResponseService from "../../../services/LLMResponseService";
 
@@ -29,7 +28,7 @@ const PromptItem = ({ prompt }) => {
 const ResponseItem = ({ loader, answer }) => {
   const copyToClipboard = async (response) => {
     await Clipboard.setStringAsync(response);
-    Toast.show("Text copied to clipboard!");
+    //Toast.show("Text copied to clipboard!");
   };
 
   return (
@@ -89,11 +88,11 @@ const ResponseItem = ({ loader, answer }) => {
   );
 };
 
-export const ChatRowItem = ({ prompt, model }) => {
+export const ChatRowItem = ({ prompt, hookParams }) => {
   const { responseData, loading, error } =
-    model == "LAWSAGE"
+    hookParams == "LawSage"
       ? LLMResponseService({ prompt })
-      : RAGResponseSevice({ prompt });
+      : RAGResponseSevice({ prompt, hookParams });
 
   return (
     <View style={styles.cardContainer}>
@@ -154,6 +153,7 @@ const styles = StyleSheet.create({
     paddingRight: 10,
     textAlign: "justify",
     fontFamily: "regular",
+    fontSize: Platform.OS === "ios" ? 16.5 : 12,
   },
   line: {
     borderColor: COLORS.gray2,

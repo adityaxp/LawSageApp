@@ -24,6 +24,8 @@ import { EmptyListPlaceHolder } from "../components/EmptyListPlaceHolder";
 import { ChatRowItem } from "../components/ChatRowItem";
 import { useRoute } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
+import { addItems, getData, storeData } from "../../../utils/localStore";
+import { getCurrentDateTime } from "../../../utils/time";
 
 export const ChatScreen = ({ navigation }) => {
   const bottomSheetRef = useRef(null);
@@ -39,10 +41,55 @@ export const ChatScreen = ({ navigation }) => {
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
   };
+  const dataToStore = {
+    "2024-05-25T12:00:00": {
+      Prompt: "How are you today?",
+      Response: "I'm doing well, thank you!",
+    },
+  };
+
+  const dataToStore1 = {
+    "2024-05-26T12:00:00": {
+      // Using consistent key format
+      Prompt: "How are you ?",
+      Response: "I'm doing well",
+    },
+  };
+
+  // Collection name
+  const collectionName = "@temp-store";
+
+  // Store the first set of data
+  addItems(collectionName, dataToStore)
+    .then(() => {
+      console.log("Data added successfully!");
+    })
+    .catch((error) => {
+      console.error("Error adding data:", error);
+    });
+
+  // Retrieve and log the first set of data
+
+  // Add the second set of data
+  addItems(collectionName, dataToStore1)
+    .then(() => {
+      console.log("Data added successfully!");
+    })
+    .catch((error) => {
+      console.error("Error adding data:", error);
+    });
+
+  // Retrieve and log the combined data
+  getData(collectionName)
+    .then((data) => {
+      console.log("Data after adding second set:", data);
+    })
+    .catch((error) => {
+      console.error("Error reading data:", error);
+    });
 
   const route = useRoute();
-  const { model } = route.params;
-
+  const { model, hookParams } = route.params;
   const handleTextChange = (newChatText) => {
     setChatInputText(newChatText);
   };
@@ -103,7 +150,7 @@ export const ChatScreen = ({ navigation }) => {
               <FlashList
                 data={chatData}
                 renderItem={({ item }) => (
-                  <ChatRowItem prompt={item.prompt} model={"LAWSAGE"} />
+                  <ChatRowItem prompt={item.prompt} hookParams={hookParams} />
                 )}
                 estimatedItemSize={273}
               />
@@ -217,9 +264,10 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 20,
     marginBottom: 5,
     flexWrap: "wrap",
+    elevation: 5,
   },
   toolBarItems: {
-    marginTop: SIZES.statusBarHeight,
+    marginTop: SIZES.statusBarHeight + 10,
     flexDirection: "row",
     marginBottom: 10,
   },
@@ -262,6 +310,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.secondary,
     paddingHorizontal: 10,
     marginHorizontal: 10,
+    elevation: 5,
   },
   chatInput: {
     flex: 1,
@@ -272,6 +321,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 10,
     marginHorizontal: 10,
+    marginBottom: 8,
   },
   infoText: {
     fontSize: 12.5,

@@ -1,10 +1,31 @@
 import React, { useState, useEffect } from "react";
-import { Text, View } from "react-native";
+import { Platform, Text, View } from "react-native";
 
 export const TypeWriter = ({ text, speed }) => {
   const [displayText, setDisplayText] = useState("");
   const [currentWordIndex, setCurrentWordIndex] = useState(0);
   const words = text.split(" ");
+
+  const parseDisplayText = (text) => {
+    const parts = text.split(/(\*\*.*?\*\*)/g);
+    return parts.map((part, index) => {
+      if (part.startsWith("**") && part.endsWith("**")) {
+        return (
+          <Text
+            key={index}
+            style={{
+              fontWeight: "bold",
+              fontSize: Platform.OS === "ios" ? 16.5 : 12,
+            }}
+          >
+            {part.slice(2, -2)}
+          </Text>
+        );
+      } else {
+        return part;
+      }
+    });
+  };
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -25,11 +46,12 @@ export const TypeWriter = ({ text, speed }) => {
         style={{
           paddingLeft: 10,
           paddingRight: 10,
-          textAlign: "justify",
+          textAlign: "left",
           fontFamily: "regular",
+          fontSize: Platform.OS === "ios" ? 16.5 : 12,
         }}
       >
-        {displayText}
+        {parseDisplayText(displayText)}
       </Text>
     </View>
   );
