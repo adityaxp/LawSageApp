@@ -8,6 +8,9 @@ import { TouchableOpacity } from "react-native-gesture-handler";
 import * as Clipboard from "expo-clipboard";
 import RAGResponseSevice from "../../../services/RAGResponseSevice";
 import LLMResponseService from "../../../services/LLMResponseService";
+import { getCurrentDateTime } from "../../../utils/time";
+import { randomUUID } from "expo-crypto";
+import { addItems } from "../../../utils/localStore";
 
 const PromptItem = ({ prompt }) => {
   return (
@@ -25,11 +28,21 @@ const PromptItem = ({ prompt }) => {
   );
 };
 
-const ResponseItem = ({ loader, answer }) => {
+const ResponseItem = ({ prompt, loader, answer }) => {
   const copyToClipboard = async (response) => {
     await Clipboard.setStringAsync(response);
     //Toast.show("Text copied to clipboard!");
   };
+
+  const id = getCurrentDateTime() + "-" + randomUUID();
+  const dataToStore = { [id]: { Prompt: prompt, Response: answer } };
+  addItems("@temp-store", dataToStore)
+    .then(() => {
+      //console.log("Data added successfully!");
+    })
+    .catch((error) => {
+      console.error("Error adding data:", error);
+    });
 
   return (
     <View style={styles.promptContainer}>
@@ -99,13 +112,17 @@ export const ChatRowItem = ({ prompt, hookParams }) => {
       <PromptItem prompt={prompt} />
       <View style={styles.line} />
       {loading ? (
-        <ResponseItem loader={loading} answer={""} />
+        <ResponseItem prompt={prompt} loader={loading} answer={""} />
       ) : error ? (
-        <ResponseItem loader={loading} answer={error} />
+        <ResponseItem prompt={prompt} loader={loading} answer={error} />
       ) : responseData ? (
-        <ResponseItem loader={loading} answer={responseData.response.content} />
+        <ResponseItem
+          prompt={prompt}
+          loader={loading}
+          answer={responseData.response.content}
+        />
       ) : (
-        <ResponseItem loader={loading} answer={""} />
+        <ResponseItem prompt={prompt} loader={loading} answer={""} />
       )}
     </View>
   );
@@ -146,14 +163,14 @@ const styles = StyleSheet.create({
     marginTop: 2.5,
     marginBottom: 10,
     fontFamily: "bold",
-    fontSize: 16,
+    fontSize: Platform.OS === "ios" ? 17.5 : 16,
   },
   text: {
     paddingLeft: 10,
     paddingRight: 10,
     textAlign: "justify",
     fontFamily: "regular",
-    fontSize: Platform.OS === "ios" ? 16.5 : 12,
+    fontSize: Platform.OS === "ios" ? 16.5 : 14,
   },
   line: {
     borderColor: COLORS.gray2,

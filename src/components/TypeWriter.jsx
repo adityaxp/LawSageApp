@@ -14,8 +14,8 @@ export const TypeWriter = ({ text, speed }) => {
           <Text
             key={index}
             style={{
-              fontWeight: "bold",
-              fontSize: Platform.OS === "ios" ? 16.5 : 12,
+              fontFamily: "semibold",
+              fontSize: Platform.OS === "ios" ? 16.5 : 14,
             }}
           >
             {part.slice(2, -2)}
@@ -48,7 +48,7 @@ export const TypeWriter = ({ text, speed }) => {
           paddingRight: 10,
           textAlign: "left",
           fontFamily: "regular",
-          fontSize: Platform.OS === "ios" ? 16.5 : 12,
+          fontSize: Platform.OS === "ios" ? 16.5 : 14,
         }}
       >
         {parseDisplayText(displayText)}

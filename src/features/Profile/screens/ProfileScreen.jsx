@@ -15,7 +15,11 @@ const ProfileMenu = ({ navigation }) => {
 
   return (
     <View style={styles.menuWrapper}>
-      <TouchableOpacity onPress={() => {}}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate("SavedSession");
+        }}
+      >
         <View style={styles.menuItem(0.2)}>
           <FontAwesome name="save" size={24} color="black" />
           <Text style={styles.name}>{"   "}Saved Chats</Text>

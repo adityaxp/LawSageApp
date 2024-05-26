@@ -24,15 +24,59 @@ import { EmptyListPlaceHolder } from "../components/EmptyListPlaceHolder";
 import { ChatRowItem } from "../components/ChatRowItem";
 import { useRoute } from "@react-navigation/native";
 import { FlashList } from "@shopify/flash-list";
-import { addItems, getData, storeData } from "../../../utils/localStore";
-import { getCurrentDateTime } from "../../../utils/time";
+import {
+  addItems,
+  addSavedSessions,
+  clearAllData,
+  getData,
+  storeData,
+} from "../../../utils/localStore";
+import CustomModal from "../../../components/CustomModal";
+import { saveHTMLToPDF, storeDataInFile } from "../../../utils/externalStore";
+import { convertChatDataToHTML } from "../../../utils/convertChatDataToHTML";
 
 export const ChatScreen = ({ navigation }) => {
   const bottomSheetRef = useRef(null);
   const snapPoints = [SIZES.height - SIZES.height + 0.01, "45%", "50%"];
+  const collectionName = "@temp-store";
 
   const scrollViewRef = useRef();
   const [chatInputText, setChatInputText] = useState("");
+
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [savedData, setSavedData] = useState("");
+  const [fileType, setFileType] = useState("");
+  const [htmlText, setHtmlText] = useState("");
+  const [modalParams, setModalParams] = useState({
+    modalDescription: "",
+    modalPlaceholder: "",
+    modalOperation: "",
+  });
+
+  const handleAlertClose = (inputValue) => {
+    setIsModalVisible(false);
+    if (inputValue) {
+      if (fileType === ".json") {
+        storeDataInFile(inputValue, fileType, savedData);
+      } else if (fileType === ".pdf") {
+        saveHTMLToPDF(inputValue, htmlText);
+      } else if (fileType === ".local-save") {
+        addSavedSessions("@saved-sessions", JSON.stringify(inputValue))
+          .then(() => {
+            addItems(inputValue, savedData)
+              .then(() => {
+                console.log("Data added to custom slot successfully!");
+              })
+              .catch((error) => {
+                console.error("Error adding data:", error);
+              });
+          })
+          .catch((error) => {
+            console.error("Error adding data:", error);
+          });
+      }
+    }
+  };
 
   const scrollToBottom = () => {
     scrollViewRef.current.scrollToEnd({ animated: true });
@@ -41,52 +85,6 @@ export const ChatScreen = ({ navigation }) => {
   const openBottomSheet = () => {
     bottomSheetRef.current?.expand();
   };
-  const dataToStore = {
-    "2024-05-25T12:00:00": {
-      Prompt: "How are you today?",
-      Response: "I'm doing well, thank you!",
-    },
-  };
-
-  const dataToStore1 = {
-    "2024-05-26T12:00:00": {
-      // Using consistent key format
-      Prompt: "How are you ?",
-      Response: "I'm doing well",
-    },
-  };
-
-  // Collection name
-  const collectionName = "@temp-store";
-
-  // Store the first set of data
-  addItems(collectionName, dataToStore)
-    .then(() => {
-      console.log("Data added successfully!");
-    })
-    .catch((error) => {
-      console.error("Error adding data:", error);
-    });
-
-  // Retrieve and log the first set of data
-
-  // Add the second set of data
-  addItems(collectionName, dataToStore1)
-    .then(() => {
-      console.log("Data added successfully!");
-    })
-    .catch((error) => {
-      console.error("Error adding data:", error);
-    });
-
-  // Retrieve and log the combined data
-  getData(collectionName)
-    .then((data) => {
-      console.log("Data after adding second set:", data);
-    })
-    .catch((error) => {
-      console.error("Error reading data:", error);
-    });
 
   const route = useRoute();
   const { model, hookParams } = route.params;
@@ -95,10 +93,15 @@ export const ChatScreen = ({ navigation }) => {
   };
 
   const handleAddChatData = () => {
-    setChatData((prevChatData) => [...prevChatData, { prompt: chatInputText }]);
-    setChatInputText("");
-    Keyboard.dismiss();
-    scrollToBottom();
+    if (chatInputText) {
+      setChatData((prevChatData) => [
+        ...prevChatData,
+        { prompt: chatInputText },
+      ]);
+      setChatInputText("");
+      Keyboard.dismiss();
+      scrollToBottom();
+    }
   };
 
   const [chatData, setChatData] = useState([]);
@@ -113,7 +116,10 @@ export const ChatScreen = ({ navigation }) => {
           <View style={styles.toolBarItems}>
             <TouchableOpacity
               style={styles.backButton}
-              onPress={() => navigation.goBack()}
+              onPress={() => {
+                clearAllData(collectionName);
+                navigation.goBack();
+              }}
             >
               <Ionicons
                 name="arrow-back-circle-outline"
@@ -199,7 +205,25 @@ export const ChatScreen = ({ navigation }) => {
           <View style={styles.menuOptionsContainer}>
             <Text style={styles.optionsTitleText}>Save Chat</Text>
             <View style={styles.optionsContainer}>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity
+                onPress={() => {
+                  getData(collectionName)
+                    .then((data) => {
+                      setSavedData(data);
+                      setModalParams({
+                        modalDescription:
+                          "Current session will be saved to local storage",
+                        modalPlaceholder: "Enter a slot name",
+                        modalOperation: "Save Session",
+                      });
+                      setIsModalVisible(true);
+                      setFileType(".local-save");
+                    })
+                    .catch((error) => {
+                      console.error("Error reading data:", error);
+                    });
+                }}
+              >
                 <View style={styles.menuItem(0.2)}>
                   <FontAwesome name="save" size={24} color="black" />
                   <Text style={styles.optionItemName}>
@@ -221,7 +245,24 @@ export const ChatScreen = ({ navigation }) => {
           <View style={styles.menuOptionsContainer}>
             <Text style={styles.optionsTitleText}>Export Chat</Text>
             <View style={styles.optionsContainer}>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity
+                onPress={() => {
+                  getData(collectionName)
+                    .then((data) => {
+                      setSavedData(data);
+                      setModalParams({
+                        modalDescription: "Export as:",
+                        modalPlaceholder: "Enter a filename",
+                        modalOperation: "Save File",
+                      });
+                      setIsModalVisible(true);
+                      setFileType(".json");
+                    })
+                    .catch((error) => {
+                      console.error("Error reading data:", error);
+                    });
+                }}
+              >
                 <View style={styles.menuItem(0.2)}>
                   <MaterialCommunityIcons
                     name="code-json"
@@ -233,7 +274,24 @@ export const ChatScreen = ({ navigation }) => {
                   </Text>
                 </View>
               </TouchableOpacity>
-              <TouchableOpacity onPress={() => {}}>
+              <TouchableOpacity
+                onPress={() => {
+                  getData(collectionName)
+                    .then((data) => {
+                      setModalParams({
+                        modalDescription: "Export as:",
+                        modalPlaceholder: "Enter a filename",
+                        modalOperation: "Save File",
+                      });
+                      setHtmlText(convertChatDataToHTML(data));
+                      setIsModalVisible(true);
+                      setFileType(".pdf");
+                    })
+                    .catch((error) => {
+                      console.error("Error reading data:", error);
+                    });
+                }}
+              >
                 <View style={styles.menuItem(0)}>
                   <AntDesign name="pdffile1" size={24} color="black" />
                   <Text style={styles.optionItemName}>
@@ -244,6 +302,11 @@ export const ChatScreen = ({ navigation }) => {
             </View>
           </View>
         </View>
+        <CustomModal
+          isVisible={isModalVisible}
+          onClose={handleAlertClose}
+          modalParams={modalParams}
+        />
       </BottomSheet>
     </GestureHandlerRootView>
   );
@@ -267,7 +330,7 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   toolBarItems: {
-    marginTop: SIZES.statusBarHeight + 10,
+    marginTop: SIZES.statusBarHeight + 5,
     flexDirection: "row",
     marginBottom: 10,
   },
@@ -293,6 +356,7 @@ const styles = StyleSheet.create({
     fontFamily: "medium",
     fontStyle: "italic",
     color: COLORS.gray,
+    fontSize: 14.5,
   },
   modelCardExpandButton: {
     paddingLeft: 10,
