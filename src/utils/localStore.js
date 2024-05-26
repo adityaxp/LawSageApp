@@ -1,4 +1,5 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { collection } from "firebase/firestore";
 
 export const storeData = async (collectionName, value) => {
   try {
@@ -35,6 +36,28 @@ export const addItems = async (collectionName, newItem) => {
       ...newItem,
     };
     await storeData(collectionName, updatedData);
+  } catch (e) {
+    console.error("Error adding item", e);
+  }
+};
+
+export const getExistingSessions = async (collectionName) => {
+  try {
+    const sessionList = await AsyncStorage.getItem(collectionName);
+    return sessionList != null ? JSON.stringify(sessionList) : {};
+  } catch (e) {
+    console.error("Error adding item", e);
+  }
+};
+
+export const addSavedSessions = async (collectionName, newItem) => {
+  try {
+    const existingSessionData = await getExistingSessions(collectionName);
+
+    const updatedData = [...existingSessionData, ...newItem];
+    //console.log(JSON.stringify(updatedData));
+
+    await AsyncStorage.setItem(collectionName, JSON.stringify(updatedData));
   } catch (e) {
     console.error("Error adding item", e);
   }
