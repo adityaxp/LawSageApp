@@ -9,7 +9,7 @@ Lawsage is a legal advisory platform powered by LLM, featuring various fine-tune
 Clone the project
 
 ```bash
-git clone https://github.com/adityaxp/DecorHub.git
+git clone https://github.com/adityaxp/LawSageApp.git 
 ```
 
 Install Dependencies
