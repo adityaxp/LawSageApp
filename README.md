@@ -29,5 +29,4 @@ npm start or npx expo start
 
 ## App screenshots
 
-<img src="https://firebasestorage.googleapis.com/v0/b/portfolio-assets-ba601.appspot.com/o/pictures%2FLawSage%2F1.png?alt=media&token=d88b7e1c-d9e0-4cc1-8d56-efb949d06577" width="180">    <img src="https://firebasestorage.googleapis.com/v0/b/portfolio-assets-ba601.appspot.com/o/pictures%2FLawSage%2F2.png?alt=media&token=721ca54d-923a-47e1-819e-305eaada39b8" width="180">    <img src="https://firebasestorage.googleapis.com/v0/b/portfolio-assets-ba601.appspot.com/o/pictures%2FLawSage%2F3.png?alt=media&token=ed20f73c-811f-4287-81a6-a8f2a8a80e0e" width="180">
-<img src="https://firebasestorage.googleapis.com/v0/b/portfolio-assets-ba601.appspot.com/o/pictures%2FLawSage%2F4.png?alt=media&token=4a7bc66b-88e8-4612-ac08-fc8790aa26be" width="180">    <img src="[Images/9.jpeg](https://firebasestorage.googleapis.com/v0/b/portfolio-assets-ba601.appspot.com/o/pictures%2FLawSage%2F5.png?alt=media&token=42fd4119-afe3-4267-93e6-214ab269430f)" width="180" >
+
