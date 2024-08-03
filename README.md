@@ -29,4 +29,5 @@ npm start or npx expo start
 
 ## App screenshots
 
-
+<img src="readme assets/1.png" width="180">   <img src="readme assets/2.png" width="180">   <img src="readme assets/3.png" width="180">   <img src="readme assets/4.png" width="180">
+<img src="readme assets/5.png" width="180">
